@@ -1,34 +1,26 @@
+% Objective function
+
 function [ cost ] = cvx_opti( cmd_end_times )
 
-global p_xis;
-global p_yis;
+cmd_end_times
+
+global pxs;
+global pys;
 global ts;
 global dt;
+global N;
 global G;
 global z;
-% global initCmdTimes;
 
-cmd_end_times = cumsum(footplan(:,1));
-pxs = footplan(:, 2);
-pys = footplan(:, 3);
-
-% Set up discrete time nodes
-t_s = 0;
-t_f = 6;
-N = 249;
-
-p_xis = interp1(cmd_end_times, pxs, ts, 'next')';
-p_yis = interp1(cmd_end_times, pys, ts, 'next')';
-  
-end
+Fx = griddedInterpolant(cmd_end_times, pxs, 'next');
+p_xis = Fx(ts)';
+Fy = griddedInterpolant(cmd_end_times, pys, 'next');
+p_yis = Fy(ts)';
 
 % Set up disciplined convex optimization problem
-cvx_begin
+cvx_begin quiet
     variables x(N) u_x(N) y(N) u_y(N)
 
-    G = 10.0;
-    z = 0.5;
-    
     vels_x   = (x(2:end) - x(1:end-1)) / dt;
     vels_y   = (y(2:end) - y(1:end-1)) / dt;
     dists_x  = x - p_xis;
@@ -47,7 +39,7 @@ cvx_begin
         end
 cvx_end
 
-cost = cvx_optval;
+cost = cvx_optval
 
 end
 
