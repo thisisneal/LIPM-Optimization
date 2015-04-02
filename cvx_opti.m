@@ -8,9 +8,20 @@ global pxs;
 global pys;
 global ts;
 global dt;
+global t_s;
+global t_f;
 global N;
 global G;
 global z;
+
+% Make fmincon obey hard constraints
+ceq = [cmd_end_times(1) - t_s;
+       cmd_end_times(end) - t_f];
+c = diff( cmd_end_times);
+if(any(c < 0) || any(ceq)) 
+    cost = 223;
+    return;
+end
 
 Fx = griddedInterpolant(cmd_end_times, pxs, 'next');
 p_xis = Fx(ts)';
