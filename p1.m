@@ -1,4 +1,7 @@
-% Part 1
+% Part 1 : Optimize COM and COP given a footstep plan
+% Neal Bhasin & Rick Shanor
+% Uses convex optimization to find a globally optimal solution
+% Note: Requires CVX installation
 
 footplan = dlmread('plan001.txt');
 footplan = [0, footplan(1,2:end); footplan]; % Dummy start hold command
@@ -10,7 +13,7 @@ pys = footplan(:, 3);
 % Set up discrete time nodes
 t_s = 0;
 t_f = 6.0;
-N = 240;
+N = 300;
 
 ts = linspace(t_s, t_f, N);
 dt = ts(2) - ts(1);
@@ -18,7 +21,7 @@ p_xis = interp1(cmd_end_times, pxs, ts, 'next')';
 p_yis = interp1(cmd_end_times, pys, ts, 'next')';
 
 G = 10.0;
-z = 0.5;
+z = 0.75;
 
 % Set up disciplined convex optimization problem
 cvx_begin
