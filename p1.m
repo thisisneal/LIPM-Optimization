@@ -17,8 +17,10 @@ N = 300;
 
 ts = linspace(t_s, t_f, N);
 dt = ts(2) - ts(1);
-p_xis = interp1(cmd_end_times, pxs, ts, 'next')';
-p_yis = interp1(cmd_end_times, pys, ts, 'next')';
+Fx = griddedInterpolant(cmd_end_times, pxs, 'next');
+p_xis = Fx(ts)';
+Fy = griddedInterpolant(cmd_end_times, pys, 'next');
+p_yis = Fy(ts)';
 
 G = 10.0;
 z = 0.75;
@@ -61,3 +63,19 @@ title('Y Trajectory');
 xlabel('Time (s)');
 legend('Foot Location', 'COP', 'COM');
 legend('Location', 'SouthEast');
+
+figure;
+subplot(1,2,1), plot(ts, u_x);
+title('X Input');
+xlabel('Time (s)');
+subplot(1,2,2), plot(ts, u_y);
+title('Y Input');
+xlabel('Time (s)');
+
+figure;
+subplot(1,2,1), plot(ts(2:end), diff(x));
+title('X Velocity');
+xlabel('Time (s)');
+subplot(1,2,2), plot(ts(2:end), diff(y));
+title('Y Velocity');
+xlabel('Time (s)');
