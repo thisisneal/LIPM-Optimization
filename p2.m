@@ -39,10 +39,10 @@ lb(end) = t_f;
 ub = t_f * ones(size(timings_0,1), 1);
 ub(1) = 0;
 options = optimoptions(@fmincon,'Algorithm',algo,'Display','iter', ...
-                       'MaxFunEvals', 15000, 'MaxIter', 2000, 'DiffMinChange', dt);
-[answer,fval,exitflag]=fmincon(@cvx_opti,timings_0,[],[],[],[],lb,ub,@cvx_cstrs,options);
+                       'MaxFunEvals', 1000, 'MaxIter', 2000, 'DiffMinChange', dt);
+[opt_times,fval,exitflag]=fmincon(@cvx_opti,timings_0,[],[],[],[],lb,ub,@cvx_cstrs,options);
 
-answer
+[ ~, x, y, u_x, u_y, p_xis, p_yis ] = cvx_opti( opt_times );
 
 % Plots
 COP_x = p_xis - u_x;

@@ -1,6 +1,6 @@
 % Objective function
 
-function [ cost ] = cvx_opti( cmd_end_times )
+function [ cost, x, y, u_x, u_y, p_xis, p_yis ] = cvx_opti( cmd_end_times )
 
 cmd_end_times
 
@@ -40,7 +40,11 @@ cvx_begin quiet
     
     J_x = sum(vels_x.^2) + sum(dists_x.^2) + 30*sum(u_x.^2);
     J_y = sum(vels_y.^2) + sum(dists_y.^2) + 30*sum(u_y.^2);
-    minimize( J_x + J_y)
+    acc_x = (vels_x(2:end) - vels_x(1:end-1)) / dt;
+    J_const_vel_x = sum(acc_x.^2);
+    acc_y = (vels_y(2:end) - vels_y(1:end-1)) / dt;
+    J_const_vel_y = sum(acc_y.^2);
+    minimize( J_x + J_y + J_const_vel_x + J_const_vel_y)
     
     subject to
         for i=3:N
@@ -48,6 +52,11 @@ cvx_begin quiet
             (x(i) - 2*x(i-1) + x(i-2))/dt^2 == (G/z) * (x(i) - p_xis(i) + u_x(i));
             (y(i) - 2*y(i-1) + y(i-2))/dt^2 == (G/z) * (y(i) - p_yis(i) + u_y(i));
         end
+        % Velocity endpoint constraints
+        vels_x(1) == 0;
+        vels_x(end) == 0;
+        vels_y(1) == 0;
+        vels_y(end) == 0;
 cvx_end
 
 cost = cvx_optval
