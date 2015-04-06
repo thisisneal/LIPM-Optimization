@@ -57,6 +57,11 @@ cvx_begin quiet
         vels_x(end) == 0;
         vels_y(1) == 0;
         vels_y(end) == 0;
+        % Position endpoint constraints
+        x(1) == pxs(1);
+        x(end) == pxs(end);
+        y(1) == pys(1);
+        y(end) == pys(end);
 cvx_end
 
 cost = cvx_optval
