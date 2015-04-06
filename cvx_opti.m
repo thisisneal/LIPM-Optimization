@@ -19,7 +19,7 @@ ceq = [cmd_end_times(1) - t_s;
        cmd_end_times(end) - t_f];
 c = diff( cmd_end_times);
 if(any(c < 0) || any(ceq)) 
-    cost = 223;
+    cost = 500;
     return;
 end
 

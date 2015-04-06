@@ -1,6 +1,6 @@
-% Part 2 : Optimize ?
+% Part 2 : Optimize footstep timing using fmincon
 % Neal Bhasin & Rick Shanor
-%
+% Uses convex optimizer as inner cost function
 % Note: Requires CVX installation
 
 footplan = dlmread('plan001.txt');
@@ -39,12 +39,12 @@ lb(end) = t_f;
 ub = t_f * ones(size(timings_0,1), 1);
 ub(1) = 0;
 options = optimoptions(@fmincon,'Algorithm',algo,'Display','iter', ...
-                       'MaxFunEvals', 1000, 'MaxIter', 2000, 'DiffMinChange', dt);
+                       'MaxFunEvals', 2000, 'MaxIter', 2000, 'DiffMinChange', dt);
 [opt_times,fval,exitflag]=fmincon(@cvx_opti,timings_0,[],[],[],[],lb,ub,@cvx_cstrs,options);
 
 [ ~, x, y, u_x, u_y, p_xis, p_yis ] = cvx_opti( opt_times );
 
-% Plots
+%% Plots
 COP_x = p_xis - u_x;
 COP_y = p_yis - u_y;
 
